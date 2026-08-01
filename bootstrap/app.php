@@ -12,7 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Behind a platform proxy (Railway/Render/etc. terminate HTTPS in front of
+        // the app). Trust it so Laravel detects the real https scheme and generates
+        // https URLs — otherwise Filament's assets load as http and get blocked.
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

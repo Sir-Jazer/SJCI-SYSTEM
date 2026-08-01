@@ -1,0 +1,24 @@
+.git
+.github
+node_modules
+vendor
+tests
+storage/backups
+storage/logs/*.log
+public/build
+public/hot
+.env
+.env.*
+*.sqlite
+*.sqlite-*
+# Stale locally-built caches must not leak in — they reference dev-only packages
+# (e.g. Laravel Pail) that don't exist in the --no-dev image. Regenerated at boot.
+bootstrap/cache/*.php
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*.php
+.DS_Store
+.phpunit.result.cache
+/.phpunit.cache
+scripts
+DEPLOYMENT.md

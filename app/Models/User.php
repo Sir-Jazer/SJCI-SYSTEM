@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'role', 'church_id'])]
+#[Fillable(['name', 'email', 'password', 'must_change_password', 'role', 'church_id'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser
 {
@@ -26,8 +26,15 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'must_change_password' => 'boolean',
             'role' => UserRole::class,
         ];
+    }
+
+    /** A pastor with a Head-Pastor-provisioned (temporary) password. */
+    public function mustChangePassword(): bool
+    {
+        return (bool) $this->must_change_password;
     }
 
     /** Only pastor roles may access the admin panel in v1. */

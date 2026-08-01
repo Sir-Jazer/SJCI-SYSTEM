@@ -37,6 +37,7 @@ class AuditLog extends Model
         return match ($this->action) {
             'login' => 'Signed in',
             'logout' => 'Signed out',
+            'set_password' => 'Set own password',
             'submit' => 'Submitted report',
             'update' => 'Edited report',
             'approve' => 'Approved & locked',

@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Http\Middleware\ForcePasswordChange;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -32,6 +33,12 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            // Invite-only: no ->registration(). Accounts are created by the Head
+            // Pastor. Pastors can manage their own profile and recover a lost
+            // password by email (uses the configured mailer; falls back to the
+            // log mailer in local dev).
+            ->profile(isSimple: false)
+            ->passwordReset()
             ->brandName('Shepherd Jubilee Church Inc.')
             ->brandLogo($logoExists ? fn () => view('filament.logo') : null)
             ->favicon($logoExists ? asset('images/sjci-logo.png') : null)
@@ -69,6 +76,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                ForcePasswordChange::class,
             ]);
     }
 }
