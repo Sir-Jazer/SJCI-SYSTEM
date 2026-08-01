@@ -1,0 +1,20 @@
+# Render Blueprint — free Docker web service for the SJCI demo.
+# Uses the same Dockerfile that was built & verified locally.
+services:
+  - type: web
+    name: sjci-demo
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /up
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: SEED_DEMO
+        value: "true"
+      # Secret — set this in the Render dashboard, not here.
+      - key: APP_KEY
+        sync: false
