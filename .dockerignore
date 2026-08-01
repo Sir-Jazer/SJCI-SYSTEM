@@ -9,8 +9,12 @@ public/build
 public/hot
 .env
 .env.*
+# Never bake a local database into the image (the *.sqlite root pattern doesn't
+# reach subfolders — this does). The runtime DB lives at /data.
 *.sqlite
 *.sqlite-*
+database/*.sqlite
+database/*.sqlite-*
 # Stale locally-built caches must not leak in — they reference dev-only packages
 # (e.g. Laravel Pail) that don't exist in the --no-dev image. Regenerated at boot.
 bootstrap/cache/*.php

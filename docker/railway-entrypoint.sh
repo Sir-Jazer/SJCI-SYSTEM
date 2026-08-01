@@ -22,10 +22,16 @@ php artisan storage:link || true
 # Apply schema.
 php artisan migrate --force
 
-# Seed demo data on a brand-new database so the panel isn't empty for the demo.
-# Set SEED_DEMO=false in Railway variables to skip (e.g. once it holds real data).
-if [ "$FRESH" = "1" ] && [ "${SEED_DEMO:-true}" = "true" ]; then
-    php artisan db:seed --class=DemoSeeder --force || true
+# On a brand-new database, either load rich demo data OR just create the main
+# church + a Head Pastor login (a clean, empty start you can enter real data into).
+#   SEED_DEMO=true  (default) -> demo data
+#   SEED_DEMO=false           -> empty, with only the bootstrap admin account
+if [ "$FRESH" = "1" ]; then
+    if [ "${SEED_DEMO:-true}" = "true" ]; then
+        php artisan db:seed --class=DemoSeeder --force || true
+    else
+        php artisan sjci:bootstrap-admin || true
+    fi
 fi
 
 # Serve on the port Railway assigns.

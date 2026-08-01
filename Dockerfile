@@ -21,6 +21,12 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
+# The runtime SQLite database lives at /data (mount a volume there to persist it).
+# Pinning it image-wide means every process — the web server and any one-off
+# `artisan` command — uses the same database.
+ENV DB_CONNECTION=sqlite
+ENV DB_DATABASE=/data/database.sqlite
+
 # Install PHP deps first (better build caching). Skip scripts here — package
 # discovery runs at startup once the environment is present.
 COPY composer.json composer.lock ./

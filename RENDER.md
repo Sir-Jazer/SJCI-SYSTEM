@@ -20,11 +20,14 @@ straight from your GitHub repo. No credit card needed to start.
    - **Instance Type: Free.**
    - (If it asks, Health Check Path = `/up`.)
 4. Before the first deploy finishes, open **Environment** and add:
-   | Key | Value |
-   |---|---|
-   | `APP_KEY` | your `base64:...` key (below) |
-   | `APP_ENV` | `production` |
-   | `APP_DEBUG` | `false` |
+   | Key | Value | Notes |
+   |---|---|---|
+   | `APP_KEY` | your `base64:...` key (below) | required |
+   | `APP_ENV` | `production` | |
+   | `APP_DEBUG` | `false` | |
+   | `SEED_DEMO` | `false` | **empty database** (only your admin login). Use `true` for demo data. |
+   | `ADMIN_EMAIL` | your email | the Head Pastor login on the empty start |
+   | `ADMIN_PASSWORD` | *(set as secret)* | if omitted, defaults to `password` and forces a change on first login |
 5. Click **Create Web Service**. First build takes a few minutes.
 6. When it's live, Render gives you a URL like `https://sjci-demo.onrender.com` —
    that's your demo link.
@@ -38,22 +41,32 @@ base64:qLS5STJZPR+8cwJNThEU+qEwjM50pQIMWWsEfjheCUc=
 ```
 Or make a fresh one any time with `php artisan key:generate --show`.
 
-## Demo logins (seeded automatically)
-| Role | Email | Password |
-|---|---|---|
-| Head Pastor | `headpastor@sjci.test` | `password` |
-| Outreach Pastor 1 | `outreach1@sjci.test` | `password` |
-| Outreach Pastor 2 | `outreach2@sjci.test` | `password` |
+## Logins
+- **Empty start** (`SEED_DEMO=false`, the default): log in as your `ADMIN_EMAIL`
+  with your `ADMIN_PASSWORD` (or `password`, which forces a change on first login).
+  Everything else is empty — create churches, pastors, and records yourself.
+- **Demo data** (`SEED_DEMO=true`): seeded accounts, all with password `password` —
+  `headpastor@sjci.test`, `outreach1@sjci.test`, `outreach2@sjci.test`.
+
+## Where is the database, and does it persist?
+- The live database is a SQLite file **inside the container at `/data/database.sqlite`**
+  (locally on your Mac it's `database/database.sqlite`).
+- ⚠️ **Render's free tier has no persistent disk, so `/data` is wiped on every
+  redeploy and every wake-from-sleep.** That's why the app rebuilds the database
+  on boot (runs migrations, then either seeds demo data or creates just your admin).
+  Fine for a demo — **but anything you enter live will not survive a restart.**
+- **To keep real data**, mount a persistent disk: Render service → **Settings →
+  Disks → Add Disk**, mount path **`/data`** (1 GB is plenty). Render disks are a
+  paid add-on. Once mounted, the database survives restarts and the boot-time
+  seeding is skipped automatically (it only runs on an empty `/data`).
+- Your free, permanent home for real records is still **Oracle Cloud**
+  (`DEPLOYMENT.md`).
 
 ## Good to know
 - **Alternative to the dashboard:** this repo includes `render.yaml`, so you can
   instead use **New + → Blueprint** and Render reads all the settings from it
-  (you still set the `APP_KEY` secret in the dashboard).
-- **Data resets** on redeploy/sleep (free tier has no persistent disk) — but the
-  demo data re-seeds on every boot, so the panel is always populated.
-- **Turn off seeding** later (once it holds real data) by setting `SEED_DEMO=false`.
-- Render's free tier is fine for a demo. Your permanent home is still **Oracle
-  Cloud** (`DEPLOYMENT.md`); this is just to get you on screen tomorrow.
+  (you still set the `APP_KEY`/`ADMIN_PASSWORD` secrets in the dashboard).
+- **Fresh start any time:** with no disk, any redeploy resets to a clean database.
 
 ## Other free fallbacks (if Render gives trouble)
 - **Koyeb** (koyeb.com) — free instance, Docker + GitHub, similar flow.

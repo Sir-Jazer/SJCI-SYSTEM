@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         // --- Main church + Head Pastor ---
         $main = Church::create([
-            'name' => 'Shepherd Jubilee Church Inc. (Main)',
+            'name' => 'Shepherd Jubillee Church Inc. (Main)',
             'is_main' => true,
         ]);
 

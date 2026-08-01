@@ -26,7 +26,9 @@ class AdminPanelProvider extends PanelProvider
     {
         // Uses the church logo once it is saved to public/images/sjci-logo.png;
         // until then the brand name is shown instead of a broken image.
-        $logoExists = file_exists(public_path('images/sjci-logo.png'));
+        // NOTE: the committed file is SJCI-LOGO.png (uppercase). Must match exactly —
+        // Linux hosts (Render/Oracle) are case-sensitive even though macOS isn't.
+        $logoExists = file_exists(public_path('images/SJCI-LOGO.png'));
 
         return $panel
             ->default()
@@ -39,9 +41,9 @@ class AdminPanelProvider extends PanelProvider
             // log mailer in local dev).
             ->profile(isSimple: false)
             ->passwordReset()
-            ->brandName('Shepherd Jubilee Church Inc.')
+            ->brandName('Shepherd Jubillee Church Inc.')
             ->brandLogo($logoExists ? fn () => view('filament.logo') : null)
-            ->favicon($logoExists ? asset('images/sjci-logo.png') : null)
+            ->favicon($logoExists ? asset('images/SJCI-LOGO.png') : null)
             ->colors([
                 'primary' => Color::Blue, // church blue — buttons, links, active nav (well-tuned scale)
                 'info' => Color::hex('#0ea5e9'),

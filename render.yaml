@@ -13,8 +13,16 @@ services:
         value: production
       - key: APP_DEBUG
         value: "false"
+      # "false" = clean, empty database with only a Head Pastor login (below).
+      # "true"  = load rich demo data instead.
       - key: SEED_DEMO
-        value: "true"
+        value: "false"
+      # Your Head Pastor login for the empty start (edit the email; set the
+      # password as a secret in the dashboard). Defaults are used if omitted.
+      - key: ADMIN_EMAIL
+        value: headpastor@sjci.test
+      - key: ADMIN_PASSWORD
+        sync: false
       # Secret — set this in the Render dashboard, not here.
       - key: APP_KEY
         sync: false
